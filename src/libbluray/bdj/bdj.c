@@ -879,9 +879,9 @@ static int _create_jvm(void *jvm_lib, const char *java_home, const char *jar_fil
 
     option[n++].optionString = str_dup   ("-Dawt.toolkit=java.awt.BDToolkit");
     option[n++].optionString = str_dup   ("-Djava.awt.graphicsenv=java.awt.BDGraphicsEnvironment");
-    option[n++].optionString = str_dup   ("-Xms512M");
-    option[n++].optionString = str_dup   ("-Xmx512M");
-    option[n++].optionString = str_dup   ("-Xss4096k");
+    option[n++].optionString = str_dup   ("-Xms256M");
+    option[n++].optionString = str_dup   ("-Xmx256");
+    option[n++].optionString = str_dup   ("-Xss2048k");
     option[n++].optionString = str_printf("-Djava.io.tmpdir=%s", java_home);
     BD_DEBUG(DBG_BDJ | DBG_CRIT, "Use java_home as cache dir.\n");
     option[n++].optionString = str_dup   ("-Djava.awt.headless=false");
