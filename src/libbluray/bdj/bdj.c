@@ -406,6 +406,7 @@ static void *_load_jvm(const char **p_java_home, const char *app_java_home)
 #    ifdef __FreeBSD__
                                             "/usr/local/openjdk8",
                                             "/usr/local/openjdk11",
+                                            "/usr/local/openjdk17",
 #    else
                                             "/usr/lib/jvm/default-java",
                                             "/usr/lib/jvm/default",
@@ -415,6 +416,8 @@ static void *_load_jvm(const char **p_java_home, const char *app_java_home)
                                             "/usr/lib/jvm/java-8-openjdk-" JAVA_ARCH,
                                             "/usr/lib/jvm/java-11-openjdk",
                                             "/usr/lib/jvm/java-11-openjdk-" JAVA_ARCH,
+                                            "/usr/lib/jvm/java-17-openjdk",
+                                            "/usr/lib/jvm/java-17-openjdk-" JAVA_ARCH,
 #    endif
     };
     static const char * const jvm_dir[]  = {"jre/lib/" JAVA_ARCH "/server",
@@ -1066,7 +1069,7 @@ BDJAVA* bdj_open(const char *path, struct bluray *bd,
 
     if (debug_mask & DBG_JNI) {
         int version = (int)(*env)->GetVersion(env);
-        BD_DEBUG(DBG_BDJ, "Java version: %d.%d\n", version >> 16, version & 0xffff);
+        BD_DEBUG(DBG_BDJ, "Java JNI version: %d.%d\n", version >> 16, version & 0xffff);
     }
 
     if (!_bdj_init(env, bd, path, bdj_disc_id, cfg)) {
