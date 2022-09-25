@@ -1,7 +1,7 @@
 dnl library version number
 m4_define([bluray_major], 1)
 m4_define([bluray_minor], 3)
-m4_define([bluray_micro], 2)
+m4_define([bluray_micro], 3)
 m4_define([bluray_version],[bluray_major.bluray_minor.bluray_micro])
 
 dnl shared library version (.so version)
@@ -13,7 +13,7 @@ dnl
 dnl Library file name will be libbluray.so.(current-age).age.revision
 dnl
 m4_define([lt_current],  6)
-m4_define([lt_revision], 1)
+m4_define([lt_revision], 2)
 m4_define([lt_age],      4)
 
 dnl initilization
@@ -58,15 +58,27 @@ case "${host_os}" in
     ;;
   freebsd*)
     SYS=freebsd
-    CFLAGS="${CFLAGS} -D_XOPEN_SOURCE=700"
+    CFLAGS="${CFLAGS} -D__BSD_VISIBLE=1 -D__XSI_VISIBLE=1"
+    ;;
+  solaris*)
+    SYS=solaris
+    CFLAGS="${CFLAGS} -D__EXTENSIONS__"
     ;;
   *)
     SYS="${host_os}"
     ;;
 esac
 
+dnl Falsely enables for NetBSD
+dnl warning: warning: reference to obsolete getfsstat(); use getvfsstat()
+AS_IF([test "${SYS}" != "netbsd"], [
+  AC_CHECK_FUNCS([getfsstat])
+])
+AC_CHECK_FUNCS([getvfsstat])
+
 AM_CONDITIONAL(HAVE_WIN32,   test "${SYS}" = "mingw32")
 AM_CONDITIONAL(HAVE_DARWIN,  test "${SYS}" = "darwin")
+AM_CONDITIONAL(HAVE_GETFSSTAT, test "${ac_cv_func_getfsstat}" = "yes" -o "${ac_cv_func_getvfsstat}" = "yes")
 
 dnl messages
 library_not_found="Could not find required library!"
@@ -131,7 +143,7 @@ AC_TYPE_SIGNAL
 
 dnl required headers
 AC_CHECK_HEADERS([stdarg.h sys/types.h dirent.h errno.h libgen.h malloc.h])
-AC_CHECK_HEADERS([stdlib.h mntent.h linux/cdrom.h inttypes.h strings.h])
+AC_CHECK_HEADERS([stdlib.h mntent.h inttypes.h strings.h])
 AC_CHECK_HEADERS([sys/time.h time.h mntent.h])
 
 dnl required structures
