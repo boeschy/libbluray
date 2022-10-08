@@ -434,9 +434,14 @@ public class Libbluray {
             Status.shutdown();
             ServiceContextFactoryImpl.shutdown();
             FontFactory.unloadDiscFonts();
-            CacheDir.remove();
         } catch (Throwable e) {
             System.err.println("shutdown() failed: " + e + "\n" + Logger.dumpStack(e));
+        }
+        try {
+            BDJAppProxy.cleanup();
+            CacheDir.remove();
+        } catch (Throwable e) {
+            System.err.println("cleanup failed: " + e + "\n" + Logger.dumpStack(e));
         }
         nativePointer = 0;
         titleInfos = null;
