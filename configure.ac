@@ -218,6 +218,11 @@ AS_IF([test "x$with_freetype" != "xno"], [
   ])
 ])
 
+dnl symbol visibility
+CC_CHECK_CFLAGS_APPEND([-fvisibility=hidden])
+CPPFLAGS="${CPPFLAGS} -DBLURAY_API_EXPORT"
+
+dnl compiler warnings
 CC_CHECK_CFLAGS_APPEND([-Wall -Wdisabled-optimization -Wpointer-arith ]dnl
 [-Wredundant-decls -Wcast-qual -Wwrite-strings -Wtype-limits -Wundef ]dnl
 [-Wmissing-prototypes -Wshadow])
@@ -316,7 +321,7 @@ AM_CONDITIONAL([BDJ_J2SE], [ test x"$BDJ_TYPE" != x"j2me" ])
 dnl bootclasspath
 AC_SUBST(BDJ_BOOTCLASSPATH)
 
-AS_IF([test "x$with_external_libudfread" = "xyes"], [
+AS_IF([test "x$with_external_libudfread" != "xno"], [
     PKG_CHECK_MODULES([LIBUDFREAD], [libudfread >= 1.1.0],
         [with_libudfread=yes
          AC_DEFINE([HAVE_LIBUDFREAD], [1], [Define to 1 if external libudfread is to be used])
