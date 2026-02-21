@@ -423,6 +423,8 @@ static void *_load_jvm(const char **p_java_home, const char *app_java_home)
                                             "/usr/lib/jvm/java-6-openjdk",
                                             "/usr/lib/jvm/java-8-openjdk",
                                             "/usr/lib/jvm/java-8-openjdk-" JAVA_ARCH,
+                                            "/usr/lib/jvm/java-7-openjdk",
+                                            "/usr/lib/jvm/java-7-openjdk-" JAVA_ARCH,
                                             "/usr/lib/jvm/java-11-openjdk",
                                             "/usr/lib/jvm/java-11-openjdk-" JAVA_ARCH,
                                             "/usr/lib/jvm/java-17-openjdk",
@@ -922,11 +924,12 @@ static int _create_jvm(void *jvm_lib, const char *java_home, BDJ_CONFIG *cfg,
     option[n++].optionString = str_dup   ("-Dawt.toolkit=java.awt.BDToolkit");
     option[n++].optionString = str_dup   ("-Djava.awt.graphicsenv=java.awt.BDGraphicsEnvironment");
     option[n++].optionString = str_dup   ("-Djava.awt.headless=false");
-    option[n++].optionString = str_dup   ("-Xms384M");
-    option[n++].optionString = str_dup   ("-Xmx384M");
-    option[n++].optionString = str_dup   ("-Xss4096k");
+    option[n++].optionString = str_dup   ("-Xms768M");
+    option[n++].optionString = str_dup   ("-Xmx768M");
+    option[n++].optionString = str_dup   ("-Xss8192k");
     option[n++].optionString = str_printf("-Djava.io.tmpdir=%s", java_home);
     BD_DEBUG(DBG_BDJ | DBG_CRIT, "Use java_home as cache dir.\n");
+    option[n++].optionString = str_dup   ("-Djava.awt.headless=false");
     BD_DEBUG(DBG_CRIT | DBG_BDJ, "Disable X11 check\n");
 #ifdef HAVE_BDJ_J2ME
     option[n++].optionString = str_printf("-Djava.home=%s", java_home);
