@@ -30,10 +30,13 @@ import java.security.PrivilegedAction;
 
 import javax.microedition.xlet.UnavailableContainerException;
 
+import javax.tv.util.TVTimerImpl;
+
 import org.bluray.ui.FrameAccurateAnimation;
 import org.dvb.application.AppID;
 import org.dvb.application.AppProxy;
 import org.dvb.application.AppsDatabase;
+import org.havi.ui.HLook;
 import org.havi.ui.HSceneFactory;
 import org.videolan.bdjo.AppCache;
 import org.videolan.bdjo.AppEntry;
@@ -282,7 +285,15 @@ public class BDJXletContext implements javax.tv.xlet.XletContext, javax.microedi
         return sceneFactory;
     }
 
-    public static Object getXletDefaultLook(String key, Class defClass) {
+    public void setTVTimer(TVTimerImpl tvt) {
+        tvTimer = tvt;
+    }
+
+    public TVTimerImpl getTVTimer() {
+        return tvTimer;
+    }
+
+    public static HLook getXletDefaultLook(String key, Class defClass) {
         BDJXletContext ctx = BDJXletContext.getCurrentContext();
         if (ctx == null) {
             logger.error("getDefaultLook(): no context: " + Logger.dumpStack());
@@ -291,7 +302,7 @@ public class BDJXletContext implements javax.tv.xlet.XletContext, javax.microedi
         return ctx.getDefaultLook(key, defClass);
     }
 
-    public static void setXletDefaultLook(String key, Object look) {
+    public static void setXletDefaultLook(String key, HLook look) {
         BDJXletContext ctx = BDJXletContext.getCurrentContext();
         if (ctx == null) {
             logger.error("setDefaultLook(): no context: " + Logger.dumpStack());
@@ -300,13 +311,13 @@ public class BDJXletContext implements javax.tv.xlet.XletContext, javax.microedi
         ctx.setDefaultLook(key, look);
     }
 
-    private Object getDefaultLook(String key, Class defClass) {
-        Object look = null;
+    private HLook getDefaultLook(String key, Class defClass) {
+        HLook look = null;
         synchronized (defaultLooks) {
-            look = defaultLooks.get(key);
+            look = (HLook)defaultLooks.get(key);
             if (look == null) {
                 try {
-                    look = defClass.newInstance();
+                    look = (HLook)defClass.newInstance();
                     setDefaultLook(key, look);
                 } catch (Exception t) {
                     logger.error("Error creating default look " + defClass.getName() + " for " + key + ": " + t);
@@ -316,7 +327,7 @@ public class BDJXletContext implements javax.tv.xlet.XletContext, javax.microedi
         return look;
     }
 
-    private void setDefaultLook(String key, Object look) {
+    private void setDefaultLook(String key, HLook look) {
         synchronized (defaultLooks) {
             defaultLooks.remove(key);
             if (look != null) {
@@ -492,6 +503,9 @@ public class BDJXletContext implements javax.tv.xlet.XletContext, javax.microedi
             callbackQueue.shutdown();
             userEventQueue.shutdown();
             mediaQueue.shutdown();
+            if (tvTimer != null) {
+                tvTimer.shutdown();
+            }
         }
 
         EventQueue eq = eventQueue;
@@ -516,6 +530,7 @@ public class BDJXletContext implements javax.tv.xlet.XletContext, javax.microedi
             callbackQueue = null;
             userEventQueue = null;
             mediaQueue = null;
+            tvTimer = null;
         }
         synchronized (this) {
             threadGroup = null;
@@ -546,5 +561,6 @@ public class BDJXletContext implements javax.tv.xlet.XletContext, javax.microedi
     private BDJActionQueue callbackQueue;
     private BDJActionQueue userEventQueue;
     private BDJActionQueue mediaQueue;
+    private TVTimerImpl tvTimer = null;
     private static final Logger logger = Logger.getLogger(BDJXletContext.class.getName());
 }

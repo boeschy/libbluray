@@ -52,6 +52,9 @@
 
 #define DEFAULT_LANGUAGE  "eng"
 
+#ifdef _MSC_VER
+#define strncasecmp _strnicmp
+#endif
 
 #define BAD_CAST_CONST (const xmlChar *)
 #define XML_FREE(p) (xmlFree(p), p = NULL)
