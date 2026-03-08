@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 project('libbluray', 'c',
-    version: '1.4.0',
+    version: '1.4.1',
     subproject_dir: 'contrib',
     default_options: ['buildtype=debugoptimized',
                       'c_std=c99',
@@ -23,7 +23,7 @@ add_project_arguments('-DHAVE_CONFIG_H=1', language: 'c')
 libbluray_inc_dirs = [include_directories('.', 'src', 'src/libbluray', 'src/libbluray/disc')]
 
 # The version number for the shared library
-libbluray_soname_version = '3.0.0'
+libbluray_soname_version = '3.1.0'
 
 libbluray_version = meson.project_version()
 libbluray_version_split = libbluray_version.split('.')
@@ -42,9 +42,11 @@ extra_dependencies = []
 
 if host_machine.system() == 'windows'
     test_args += ['-D_WIN32_WINNT=0x0502', '-D_WIN32_IE=0x0501']
-    if cc.get_argument_syntax() != 'msvc'
+    if cc.get_define('_MSC_VER') == ''
         extra_dependencies += cc.find_library('ssp')
         test_args += '-D__USE_MINGW_ANSI_STDIO=1'
+    else
+        test_args += ['-D_CRT_NONSTDC_NO_WARNINGS', '-D_CRT_SECURE_NO_WARNINGS']
     endif
 else
     test_args += '-D_POSIX_C_SOURCE=200809L'
@@ -143,6 +145,14 @@ if cc.has_function('dladdr', prefix: '#include <dlfcn.h>', args: [test_args, dla
     cdata.set('HAVE_DLADDR', 1)
 endif
 
+if not cc.has_function('getopt', prefix: '#include <unistd.h>', args: test_args)
+    getopt_dependency = declare_dependency(
+        sources: 'src/compat/getopt.c',
+        include_directories: 'src/compat/include')
+else
+    getopt_dependency = []
+endif
+
 # External dependencies and libraries
 
 if host_machine.system() == 'windows'
@@ -212,6 +222,8 @@ if cc.get_argument_syntax() != 'msvc'
     if get_option('buildtype') not in ['debug', 'plain']
         optional_arguments += '-fomit-frame-pointer'
     endif
+else
+    optional_arguments += '/wd4267' # Disable warning C4267: conversion from 'size_t' to 'int'
 endif
 
 add_project_arguments(cc.get_supported_arguments(optional_arguments), language: 'c')
@@ -219,7 +231,7 @@ add_project_link_arguments(cc.get_supported_link_arguments(optional_link_argumen
 add_project_arguments(test_args, language: 'c')
 
 # Generate config.h
-config_h_target = configure_file(output: 'config.h', configuration: cdata)
+configure_file(output: 'config.h', configuration: cdata)
 
 
 # Include subdir meson.build files
@@ -234,6 +246,8 @@ subdir('src/libbluray/bdj')
 subdir('src/devtools')
 
 subdir('src/examples')
+
+subdir('src/tools')
 
 subdir('doc')
 
