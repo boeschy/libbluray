@@ -888,7 +888,15 @@ static const char * const java_base_exports[] = {
         "com.aacsla.bluray.online",
         "com.aacsla.bluray.mc",
         "com.aacsla.bluray.mt",
-        "org.videolan.backdoor", /* entry for injected Xlet / runtime fixes */
+        "org.videolan.backdoor",
+        "org.xbmc.kodi",
+        "org.xbmc.kodinerds",
+        "net.kodinerds.maven.kodi",
+        "net.kodinerds.maven.kodi.firetv",
+        "net.kodinerds.maven.kodi19",
+        "net.kodinerds.maven.kodi19.firetv",
+        "net.kodinerds.maven.kodi20",
+        "net.kodinerds.maven.kodi20.firetv", /* entry for injected Xlet / runtime fixes */
 };
 static const size_t num_java_base_exports = sizeof(java_base_exports) / sizeof(java_base_exports[0]);
 
