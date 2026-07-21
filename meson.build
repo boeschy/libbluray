@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 project('libbluray', 'c',
-    version: '1.4.1',
+    version: '1.5.0',
     subproject_dir: 'contrib',
     default_options: ['buildtype=debugoptimized',
                       'c_std=c99',
@@ -23,7 +23,7 @@ add_project_arguments('-DHAVE_CONFIG_H=1', language: 'c')
 libbluray_inc_dirs = [include_directories('.', 'src', 'src/libbluray', 'src/libbluray/disc')]
 
 # The version number for the shared library
-libbluray_soname_version = '3.1.0'
+libbluray_soname_version = '4.0.0'
 
 libbluray_version = meson.project_version()
 libbluray_version_split = libbluray_version.split('.')

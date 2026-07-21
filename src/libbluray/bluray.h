@@ -292,6 +292,9 @@ typedef struct bd_chapter {
     uint64_t    duration;  /**< duration */
     uint64_t    offset;    /**< distance from title start, bytes */
     unsigned    clip_ref;  /**< Clip reference (index to playlist clips list) */
+
+    /** Chapter name in preferred language (optional, libbluray >= 1.5.0) */
+    const char *chapter_name;
 } BLURAY_TITLE_CHAPTER;
 
 /** Playmark information */
@@ -754,14 +757,6 @@ typedef enum {
     BLURAY_PLAYER_CACHE_ROOT                   = 0x201, /**< Root path to the BD_J cache storage location. String. */
     BLURAY_PLAYER_JAVA_HOME                    = 0x202, /**< Location of JRE. String. Default: NULL (autodetect). */
 } bd_player_setting;
-
-/** Player User Operation (UO) restriction mask enforcement level. */
-typedef enum {
-    BLURAY_PLAYER_SETTING_UO_RESTRICTION_DISABLED  =  0, /**< Executes all UOs unconditionally. May break the playback. */
-    BLURAY_PLAYER_SETTING_UO_RESTRICTION_RELAXED   =  5, /**< Allows most UOs, performs some sanity checks to reduce playback issues. */
-    BLURAY_PLAYER_SETTING_UO_RESTRICTION_SAFE      = 10, /**< Mostly compliant, however allows some UOs which should not cause playback issues. */
-    BLURAY_PLAYER_SETTING_UO_RESTRICTION_COMPLIANT = 20, /**< Compliant UO restriction enforcement. */
-} bd_player_setting_uo_restriction_level;
 
 /**
  *
